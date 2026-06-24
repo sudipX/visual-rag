@@ -1,0 +1,8 @@
+.env
+chroma_db/
+uploads/
+extracted_images/
+venv/
+__pycache__/
+*.pyc
+*.pyo
