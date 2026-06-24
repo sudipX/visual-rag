@@ -199,7 +199,6 @@ async def query_documents(request: QueryRequest):
             detail=f"Retrieval failed: {str(e)}"
         )
 
-    # Call Gemini with retrieved context
     try:
         result = answer_question(
             question=request.question,
