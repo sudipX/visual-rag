@@ -1,6 +1,6 @@
 # Visual RAG Pipeline
 
-A multimodal Retrieval-Augmented Generation system built from scratch — no LangChain, no abstractions. Upload PDFs, ask questions, get grounded answers with cited sources.
+A multimodal Retrieval-Augmented Generation system built from scratch : no LangChain, no abstractions. Upload PDFs, ask questions, get grounded answers with cited sources.
 
 ---
 
@@ -8,7 +8,7 @@ A multimodal Retrieval-Augmented Generation system built from scratch — no Lan
 
 Most LLMs cannot access your private documents. Ask Claude or any model about a PDF you just uploaded, and it either admits it doesn't know or confidently makes something up.
 
-This system solves that. When you upload a PDF, it extracts the text and images, converts them into meaning-encoded vectors (embeddings), and stores them in a searchable vector database. When you ask a question, it finds the most relevant content, hands it to an LLM as context, and returns an answer grounded in your actual document — with page-level source citations.
+This system solves that. When you upload a PDF, it extracts the text and images, converts them into meaning-encoded vectors (embeddings), and stores them in a searchable vector database. When you ask a question, it finds the most relevant content, hands it to an LLM as context, and returns an answer grounded in your actual document, with page-level source citations.
 
 Tested on a real Autonomous Vehicle System report: the system correctly retrieved and cited specific technical details across 39 pages, with 45 text chunks and 5 embedded images stored and searchable.
 
@@ -35,10 +35,10 @@ Tested on a real Autonomous Vehicle System report: the system correctly retrieve
 ```
 
 **Two separate embedding models, two separate collections:**
-- `sentence-transformers/all-MiniLM-L6-v2` (384-dim) — text chunks
-- `openai/clip-vit-base-patch32` (512-dim) — images
+- `sentence-transformers/all-MiniLM-L6-v2` (384-dim) : text chunks
+- `openai/clip-vit-base-patch32` (512-dim) : images
 
-CLIP's cross-modal property means a text query like *"show me the architecture diagram"* can retrieve relevant images purely through semantic similarity — no OCR, no captions required.
+CLIP's cross-modal property means a text query like *"show me the architecture diagram"* can retrieve relevant images purely through semantic similarity : no OCR, no captions required.
 
 ---
 
@@ -131,7 +131,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ### Option A — Interactive UI (recommended for first use)
 
-Open your browser at `http://localhost:8000/docs` — FastAPI's auto-generated Swagger UI lets you upload files and send queries directly from the browser.
+Open your browser at `http://localhost:8000/docs` : FastAPI's auto-generated Swagger UI lets you upload files and send queries directly from the browser.
 
 ### Option B — curl
 
@@ -224,14 +224,14 @@ curl -X POST http://localhost:8000/ingest -F "file=@document3.pdf"
 
 **Why explicit prompt grounding?** Without the instruction "use ONLY the provided context," the LLM mixes its own training knowledge with retrieved content — making it impossible to verify whether an answer is actually backed by your document.
 
-**Data persistence:** ChromaDB uses a `PersistentClient` — all embeddings are written to disk in `chroma_db/`. Restarting the server does not lose any ingested documents. Ingesting the same PDF twice is safe — `.upsert()` replaces existing chunks by ID rather than creating duplicates.
+**Data persistence:** ChromaDB uses a `PersistentClient` : all embeddings are written to disk in `chroma_db/`. Restarting the server does not lose any ingested documents. Ingesting the same PDF twice is safe — `.upsert()` replaces existing chunks by ID rather than creating duplicates.
 
 ---
 
 ## Known Limitations
 
 - **Scanned PDFs** (images of text rather than digital text) return no extractable text. OCR support would require an additional library such as Tesseract.
-- **Image comprehension:** Images are retrieved by semantic similarity (CLIP finds which image is relevant to your query) but the LLM does not receive the image's pixel content — it only knows an image exists at a given page. True image-grounded answers would require a multimodal LLM call.
+- **Image comprehension:** Images are retrieved by semantic similarity (CLIP finds which image is relevant to your query) but the LLM does not receive the image's pixel content, it only knows an image exists at a given page. True image-grounded answers would require a multimodal LLM call.
 - **In-process only:** The server must remain running to serve queries. The vector data persists on disk; the server process itself does not.
 
 ---
